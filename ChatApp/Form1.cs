@@ -33,7 +33,7 @@ namespace ChatApp
         public static Label not_lbl;
         public static TextBox sessionID_txtbox;
         public static TextBox username_txtbox;
-        public static TextBox message_txtbox;
+        public static RichTextBox message_txtbox;
         public static TextBox msg_txtbox;
         public static Button send_button;
         public static Label limit_lbl;
@@ -43,23 +43,28 @@ namespace ChatApp
         public static string last_id = null;
         public static string last_msg = "";
         public static string WindowsName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        public static string[] admin_usernames = { @"lutc\tperfilov", @"lutc\ghowitt", @"lutc\kpang", @"lutc\nwilson"};
+        public static string[] admin_usernames = { @"lutc\tperfilov", @"lutc\ghowitt", @"lutc\kpang", @"lutc\nwilson", @"luckyboypc"};
         public static string[] blocked_usernames = { "unyxe", "timur", "admin", "windex"};
         public static bool is_admin = false;
         public static string app_id = "";
         public static bool check_rickroll = false;
+        public static string rtf_kcuf1 = @"{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057\deflangfe2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri;}}{\colortbl ;\red0\green0\blue0;\red255\green0\blue0;}{\*\generator Riched20 10.0.19041}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 \pard\widctlpar\sa160\sl252\slmult1";
+        public static string rtf_kcuf2 = @"\cf0\par}";
+        public static string rtf_kcuf = rtf_kcuf1+rtf_kcuf2;
 
 
 
         public Form1()
         {
             InitializeComponent();
-            Log("{"+WindowsName+"} started an application");
+           
             if (!Directory.Exists(RootFolderPath))
             {
                 RootFolderPath = @"C:\Chat\";
                 MainFolderPath = RootFolderPath + @"Sessions\";
             }
+            Log("{" + WindowsName + "} started an application");
+            message_txt.Rtf = rtf_kcuf;
             not_lbl = notifications_lbl;
             sessionID_txtbox = sessionid_textbox;
             username_txtbox = username_textbox;
@@ -67,10 +72,13 @@ namespace ChatApp
             send_button = send_btn;
             msg_txtbox = msg_textbox;
             limit_lbl = char_count_lbl;
-            message_txtbox.ScrollBars = ScrollBars.Vertical;
+            message_txtbox.ScrollBars = RichTextBoxScrollBars.Vertical;
             msg_txtbox.ScrollBars = ScrollBars.Vertical;
             user_count = user_count_label;
             first_ = true;
+            AddToRichTextBox("ChatApp ", "black", true);
+            AddToRichTextBox("by ", "black", false);
+            AddToRichTextBox("Unyxe, windex, Alt+255.", "red", true);
             Random m = new Random();
             msg_textbox.AppendText(" ");
             string name_ = CreateMD5("admin123");
@@ -166,21 +174,25 @@ namespace ChatApp
                 {
                     if (!check_rickroll)
                     {
-                        FileStream fs = new FileStream(MainFolderPath + CreateMD5("rickroll123"), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamReader reader = new StreamReader(fs);
-                        if (reader.ReadLine().ToString() == "1")
+                        try
                         {
-                            check_rickroll = true;
-                            var thread12 = new Thread(() =>
+                            FileStream fs = new FileStream(MainFolderPath + CreateMD5("rickroll123"), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            StreamReader reader = new StreamReader(fs);
+                            if (reader.ReadLine().ToString() == "1")
                             {
-                                Thread.Sleep(5000);
-                                check_rickroll = false;
-                            });
-                            Process process = new Process();
-                            process.StartInfo.FileName = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
-                            process.StartInfo.Arguments = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" + " --new-window";
-                            process.Start();
+                                check_rickroll = true;
+                                var thread12 = new Thread(() =>
+                                {
+                                    Thread.Sleep(5000);
+                                    check_rickroll = false;
+                                });
+                                Process process = new Process();
+                                process.StartInfo.FileName = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+                                process.StartInfo.Arguments = "https://www.youtube.com/watch?v=dQw4w9WgXcQ" + " --new-window";
+                                process.Start();
+                            }
                         }
+                        catch { }
                         try
                         {
                             
@@ -240,7 +252,7 @@ namespace ChatApp
                         {
                             limit_lbl.ForeColor = Color.Black;
                         }
-                        limit_lbl.Invoke((MethodInvoker)(() => f3()));
+                         limit_lbl.Invoke((MethodInvoker)(() => f3()));
                     }
                     if (File.Exists(sessionFilePath))
                     {
@@ -304,9 +316,52 @@ namespace ChatApp
                                 }
                                 if (CheckMute(message))
                                 {
-                                    message_txtbox.Invoke((MethodInvoker)(() => message_txtbox.AppendText(name + ">" + Environment.NewLine)));
-                                    message_txtbox.Invoke((MethodInvoker)(() => message_txtbox.AppendText(m1 + Environment.NewLine + Environment.NewLine)));
-                                    if(Form.ActiveForm != this)
+                                    string messg = "";
+                                    string meta = "";
+                                    bool ch = false;
+                                    foreach(char c in m1)
+                                    {
+                                        if (ch)
+                                        {
+                                            meta += c;
+                                            continue;
+                                        } else
+                                        {
+                                            if (c == '~')
+                                            {
+                                                ch = true;
+                                                continue;
+                                            }
+                                        }
+                                        messg += c;
+                                        
+                                    }
+                                    m1 = messg;
+                                    message_txtbox.Invoke((MethodInvoker)(() => 
+                                    {
+                                        //message_txtbox.AppendText(name + ">" + Environment.NewLine);
+                                        //message_txtbox.AppendText(m1 + Environment.NewLine + Environment.NewLine);
+                                        string color = "black";
+                                        switch (meta[0])
+                                        {
+                                            case 'b':
+                                                color = "black";
+                                                break;
+                                            case 'r':
+                                                color = "red";
+                                                break;
+                                            default:
+                                                color = "black";
+                                                break;
+                                        }
+                                        AddToRichTextBox(" ", color, true);
+                                        AddToRichTextBox(name, color, false);
+                                        AddToRichTextBox(">", "black", true);
+                                        AddToRichTextBox(m1, color, true);
+                                        message_txtbox.SelectionStart = message_txtbox.Text.Length; 
+                                        message_txtbox.ScrollToCaret(); 
+                                    }));
+                                    if (Form.ActiveForm != this)
                                     {
                                         PopUp(m1, name);
                                     }
@@ -437,7 +492,12 @@ namespace ChatApp
             }
             else if (Filter(m))
             {
-                SendMessage(m, username, sessionFilePath);
+                string metadata = "b";
+                if (is_admin)
+                {
+                    metadata = "r";
+                }
+                SendMessage(m, username, sessionFilePath, metadata);
                 last_msg = m;
                 SendNotification("Sent", Color.Green);
             }
@@ -490,7 +550,7 @@ namespace ChatApp
             }
             if (sessionFilePath != "")
             {
-                SendMessage(username + " left the chat!", "", sessionFilePath);
+                SendMessage(username + " left the chat!", "", sessionFilePath, "b");
             }
             SessionId = CreateMD5(sessionID_txtbox.Text);
             
@@ -498,9 +558,16 @@ namespace ChatApp
             last_id = SessionId;
             username_textbox.Enabled = false;
             ConnectChat(SessionId);
-            SendMessage(username + " joined the chat!", "", sessionFilePath);
+            SendMessage(username + " joined the chat!", "", sessionFilePath, "b");
             Log("{" + WindowsName + "} connected to the {"+sessionID_txtbox.Text+"} chat using username {" + username_textbox.Text+"}");
-            message_txtbox.Invoke((MethodInvoker)(() => message_txtbox.AppendText(Environment.NewLine + Environment.NewLine + "Connected to the chat with sessionID " + sessionID_txtbox.Text + Environment.NewLine + Environment.NewLine)));
+            message_txtbox.Invoke((MethodInvoker)(() =>
+            {
+                //message_txtbox.AppendText(Environment.NewLine + Environment.NewLine + "Connected to the chat with sessionID " + sessionID_txtbox.Text + Environment.NewLine + Environment.NewLine);
+                AddToRichTextBox(" ", "black", true);
+                AddToRichTextBox(" ", "black", true);
+                AddToRichTextBox("Connected to the chat with sessionID " + sessionID_txtbox.Text, "black", true);
+                AddToRichTextBox(" ", "black", true);
+            }));
             send_btn.Enabled = true;
             msg_txtbox.Enabled = true;
             ClearMessageZone();
@@ -540,7 +607,7 @@ namespace ChatApp
             {
                 if (sessionFilePath != "")
                 {
-                    SendMessage(username + " left the chat!", "", sessionFilePath);
+                    SendMessage(username + " left the chat!", "", sessionFilePath, "b");
                 }
                 SessionId = CreateMD5("1");
                 
@@ -549,8 +616,15 @@ namespace ChatApp
                 username_textbox.Enabled = false;
                 ConnectChat(SessionId);
                 Log("{" + WindowsName + "} connected to the {GLOBAL} chat using username {" + username_textbox.Text+"}");
-                SendMessage(username + " joined the chat!", "", sessionFilePath);
-                message_txtbox.Invoke((MethodInvoker)(() => message_txtbox.AppendText(Environment.NewLine + Environment.NewLine + "Connected to the GLOBAL chat" + Environment.NewLine + Environment.NewLine)));
+                SendMessage(username + " joined the chat!", "", sessionFilePath, "b");
+                message_txtbox.Invoke((MethodInvoker)(() =>
+                {
+                    //Append
+                    AddToRichTextBox(" ", "black", true);
+                    AddToRichTextBox(" ", "black", true);
+                    AddToRichTextBox("Connected to the GLOBAL chat", "black", true);
+                    AddToRichTextBox(" ", "black", true);
+                }));
                 SendNotification("This is PUBLIC chat and ANYONE can join to it." + Environment.NewLine + "DO NOT use it for your private talking!", Color.Red);
                 send_btn.Enabled = true;
                 msg_txtbox.Enabled = true;
@@ -562,6 +636,30 @@ namespace ChatApp
         {
             Form2 f2 = new Form2();
             f2.ShowDialog();
+        }
+        void AddToRichTextBox(string message, string color, bool nextLine)
+        {
+            string color_part = @"\cf";
+            switch (color)
+            {
+                case "black":
+                    color_part += "1";
+                    break;
+                case "red":
+                    color_part += "2";
+                    break;
+                default:
+                    color_part += "1";
+                    break;
+            }
+            color_part += @"\f0\fs22 ";
+            rtf_kcuf1 += color_part + message;
+            if (nextLine)
+            {
+                rtf_kcuf1 += @" \line";
+            }
+            rtf_kcuf = rtf_kcuf1 + rtf_kcuf2;
+            message_txt.Rtf = rtf_kcuf;
         }
         static void PopUp(string s, string name)
         {
@@ -666,10 +764,10 @@ namespace ChatApp
             if (joined)
             {
                 i++;
-                SendMessage(username + " joined the chat!", "", sessionFilePath);
+                SendMessage(username + " joined the chat!", "", sessionFilePath, "b");
             } else
             {
-                SendMessage(username + " left the chat!", "", sessionFilePath);
+                SendMessage(username + " left the chat!", "", sessionFilePath, "b");
                 i--;
             }
             reader.Close();
@@ -790,7 +888,7 @@ namespace ChatApp
         {
             not_lbl.Text = "";
         }
-        static void SendMessage(string message, string name, string p)
+        static void SendMessage(string message, string name, string p, string metadata)
         {
             FileStream sessionFileStream = new FileStream(p, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             StreamReader reader = new StreamReader(sessionFileStream);
@@ -803,14 +901,14 @@ namespace ChatApp
             catch
             {
                 ResetSessionFile();
-                SendMessage(message, name, p);
+                SendMessage(message, name, p, metadata);
                 return;
             }
             reader.Close();
             ClearSessionFile();
             sessionFileStream = new FileStream(p, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);
             StreamWriter writer = new StreamWriter(sessionFileStream);
-            writer.WriteLine(ToBase64(name + ">" + message));
+            writer.WriteLine(ToBase64(name + ">" + message + "~" + metadata));
             string n = "" + (i + 1);
             writer.WriteLine(ToBase64(n));
 
@@ -986,7 +1084,7 @@ namespace ChatApp
         }
         static bool Filter(string message)
         {
-            if (message.Length > 100)
+            if (message.Length > 250)
             {
                 return false;
             }
@@ -1043,8 +1141,13 @@ namespace ChatApp
             Log("{" + WindowsName + "} closed an application.");
             if (SessionId != "")
             {
-                SendMessage(username + " left the chat!", "", sessionFilePath);
+                SendMessage(username + " left the chat!", "", sessionFilePath, "b");
             }
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

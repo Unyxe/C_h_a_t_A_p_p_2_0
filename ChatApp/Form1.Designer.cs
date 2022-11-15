@@ -55,7 +55,7 @@ namespace ChatApp
             this.username_textbox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.connect_btn = new System.Windows.Forms.Button();
-            this.message_txt = new System.Windows.Forms.TextBox();
+            this.message_txt = new System.Windows.Forms.RichTextBox();
             this.char_count_lbl = new System.Windows.Forms.Label();
             this.global_chat_btn = new System.Windows.Forms.Button();
             this.user_count_label = new System.Windows.Forms.Label();
@@ -151,11 +151,11 @@ namespace ChatApp
             this.message_txt.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.message_txt.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.message_txt.Location = new System.Drawing.Point(20, 59);
-            this.message_txt.Multiline = true;
             this.message_txt.Name = "message_txt";
             this.message_txt.ReadOnly = true;
             this.message_txt.Size = new System.Drawing.Size(421, 379);
             this.message_txt.TabIndex = 9;
+            this.message_txt.Text = "";
             // 
             // char_count_lbl
             // 
@@ -202,7 +202,7 @@ namespace ChatApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 447);
             this.Controls.Add(this.admin_btn);
             this.Controls.Add(this.user_count_label);
             this.Controls.Add(this.global_chat_btn);
@@ -218,7 +218,7 @@ namespace ChatApp
             this.Controls.Add(this.msg_textbox);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "ChatLUTC";
+            this.Text = "./";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.ResumeLayout(false);
@@ -236,12 +236,12 @@ namespace ChatApp
         private System.Windows.Forms.TextBox username_textbox;
         private System.Windows.Forms.Label label3;
         public System.Windows.Forms.Button connect_btn;
-        private System.Windows.Forms.TextBox message_txt;
         private System.Windows.Forms.Button send_btn;
         private System.Windows.Forms.Label char_count_lbl;
         public System.Windows.Forms.Button global_chat_btn;
         private System.Windows.Forms.Label user_count_label;
         private System.Windows.Forms.Button admin_btn;
+        private System.Windows.Forms.RichTextBox message_txt;
     }
 }
 
