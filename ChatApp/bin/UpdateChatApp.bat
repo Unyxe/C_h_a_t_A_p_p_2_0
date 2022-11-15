@@ -1,0 +1,1 @@
+xcopy /E /H /C /I /S /Y \\lutcfs01.lutc.internal\student$\TPerfilov\Documents\ChatApp\ChatApp\bin\Debug S:\Chat\ChatApp\ChatApp\bin\Debug
