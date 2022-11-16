@@ -48,9 +48,10 @@ namespace ChatApp
         public static bool is_admin = false;
         public static string app_id = "";
         public static bool check_rickroll = false;
-        public static string rtf_kcuf1 = @"{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057\deflangfe2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri;}}{\colortbl ;\red0\green0\blue0;\red255\green0\blue0;}{\*\generator Riched20 10.0.19041}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 \pard\widctlpar\sa160\sl252\slmult1";
+        public static string rtf_kcuf1 = @"{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang2057\deflangfe2057{\fonttbl{\f0\fswiss\fprq2\fcharset0 Microsoft Sans Serif;}}{\colortbl ;\red0\green0\blue0;\red255\green0\blue0;}{\*\generator Riched20 10.0.19041}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 \pard\widctlpar\sa160\sl252\slmult1";
         public static string rtf_kcuf2 = @"\cf0\par}";
         public static string rtf_kcuf = rtf_kcuf1+rtf_kcuf2;
+        public static bool exploit_metadata_enabled = true; //CHANGE TO FALSE WHEN COPYING TO STUDENT SHARED
 
 
 
@@ -76,9 +77,9 @@ namespace ChatApp
             msg_txtbox.ScrollBars = ScrollBars.Vertical;
             user_count = user_count_label;
             first_ = true;
-            AddToRichTextBox("ChatApp ", "black", true);
-            AddToRichTextBox("by ", "black", false);
-            AddToRichTextBox("Unyxe, windex, Alt+255.", "red", true);
+            AddToRichTextBox("ChatApp ", "black", true, false, true);
+            AddToRichTextBox("by ", "black", false, true, false);
+            AddToRichTextBox("Unyxe, windex, Alt+255.", "red", true, true, true);
             Random m = new Random();
             msg_textbox.AppendText(" ");
             string name_ = CreateMD5("admin123");
@@ -342,6 +343,8 @@ namespace ChatApp
                                         //message_txtbox.AppendText(name + ">" + Environment.NewLine);
                                         //message_txtbox.AppendText(m1 + Environment.NewLine + Environment.NewLine);
                                         string color = "black";
+                                        bool cursive = false;
+                                        bool bold = false;
                                         switch (meta[0])
                                         {
                                             case 'b':
@@ -354,10 +357,36 @@ namespace ChatApp
                                                 color = "black";
                                                 break;
                                         }
-                                        AddToRichTextBox(" ", color, true);
-                                        AddToRichTextBox(name, color, false);
-                                        AddToRichTextBox(">", "black", true);
-                                        AddToRichTextBox(m1, color, true);
+                                        switch (meta[1])
+                                        {
+                                            case 't':
+                                                cursive = true;
+                                                break;
+                                            case 'f':
+                                                cursive = false;
+                                                break;
+                                            default:
+                                                cursive = false;
+                                                break;
+
+                                        }
+                                        switch (meta[2])
+                                        {
+                                            case 't':
+                                                bold = true;
+                                                break;
+                                            case 'f':
+                                                bold = false;
+                                                break;
+                                            default:
+                                                bold = false;
+                                                break;
+
+                                        }
+                                        AddToRichTextBox(" ", color, true, false, false);
+                                        AddToRichTextBox(name, color, false, false, bold);
+                                        AddToRichTextBox(">", "black", true, false, bold);
+                                        AddToRichTextBox(m1, color, true, cursive, false);
                                         message_txtbox.SelectionStart = message_txtbox.Text.Length; 
                                         message_txtbox.ScrollToCaret(); 
                                     }));
@@ -489,13 +518,17 @@ namespace ChatApp
             else if (m == last_msg)
             {
                 SendNotification("Your message is too similar to your previous one.", Color.Red);
+            } 
+            else if (m.Contains('~') && !exploit_metadata_enabled)
+            {
+                SendNotification("No... :)", Color.Red);
             }
             else if (Filter(m))
             {
-                string metadata = "b";
+                string metadata = "bff";
                 if (is_admin)
                 {
-                    metadata = "r";
+                    metadata = "rtt";
                 }
                 SendMessage(m, username, sessionFilePath, metadata);
                 last_msg = m;
@@ -533,7 +566,7 @@ namespace ChatApp
                 {
                     if (is_admin)
                     {
-                        username += "(ADMIN)";
+                        username += "(Admin)";
                     }
                     else
                     {
@@ -563,10 +596,10 @@ namespace ChatApp
             message_txtbox.Invoke((MethodInvoker)(() =>
             {
                 //message_txtbox.AppendText(Environment.NewLine + Environment.NewLine + "Connected to the chat with sessionID " + sessionID_txtbox.Text + Environment.NewLine + Environment.NewLine);
-                AddToRichTextBox(" ", "black", true);
-                AddToRichTextBox(" ", "black", true);
-                AddToRichTextBox("Connected to the chat with sessionID " + sessionID_txtbox.Text, "black", true);
-                AddToRichTextBox(" ", "black", true);
+                AddToRichTextBox(" ", "black", true, false, false);
+                AddToRichTextBox(" ", "black", true, false, false);
+                AddToRichTextBox("Connected to the chat with sessionID " + sessionID_txtbox.Text, "black", true, false, false);
+                AddToRichTextBox(" ", "black", true, false, false);
             }));
             send_btn.Enabled = true;
             msg_txtbox.Enabled = true;
@@ -620,10 +653,10 @@ namespace ChatApp
                 message_txtbox.Invoke((MethodInvoker)(() =>
                 {
                     //Append
-                    AddToRichTextBox(" ", "black", true);
-                    AddToRichTextBox(" ", "black", true);
-                    AddToRichTextBox("Connected to the GLOBAL chat", "black", true);
-                    AddToRichTextBox(" ", "black", true);
+                    AddToRichTextBox(" ", "black", true, false, false);
+                    AddToRichTextBox(" ", "black", true, false, false);
+                    AddToRichTextBox("Connected to the GLOBAL chat", "black", true, false, false);
+                    AddToRichTextBox(" ", "black", true, false, false);
                 }));
                 SendNotification("This is PUBLIC chat and ANYONE can join to it." + Environment.NewLine + "DO NOT use it for your private talking!", Color.Red);
                 send_btn.Enabled = true;
@@ -637,7 +670,7 @@ namespace ChatApp
             Form2 f2 = new Form2();
             f2.ShowDialog();
         }
-        void AddToRichTextBox(string message, string color, bool nextLine)
+        void AddToRichTextBox(string message, string color, bool nextLine, bool cursive, bool bold)
         {
             string color_part = @"\cf";
             switch (color)
@@ -652,8 +685,25 @@ namespace ChatApp
                     color_part += "1";
                     break;
             }
+            if (cursive)
+            {
+                color_part += @"\i";
+            } else
+            {
+                color_part += @"\i0";
+            }
+            if (bold)
+            {
+                color_part += @"\b";
+                
+            }else
+            {
+                color_part += @"\b0";
+            }
             color_part += @"\f0\fs22 ";
+            
             rtf_kcuf1 += color_part + message;
+            
             if (nextLine)
             {
                 rtf_kcuf1 += @" \line";
@@ -803,6 +853,10 @@ namespace ChatApp
             if (usern.Contains(' '))
             {
                 return "The username can not contain a space symbol!";
+            } 
+            else if (usern.ToLower().Contains("admin"))
+            {
+                return "You can not use this username.";
             }
             else if (usern.Length > 16)
             {
@@ -1087,7 +1141,7 @@ namespace ChatApp
             if (message.Length > 250)
             {
                 return false;
-            }
+            } 
 
             return true;
         }
